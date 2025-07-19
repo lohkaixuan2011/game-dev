@@ -332,8 +332,8 @@ export default class MathFighterScene extends Phaser.Scene {
             this.question[1] = numberA / numberB
         }
 
-        this.question.setText(this.question[0]);
+        this.questionText.setText(this.question[0]);
         const textHalfWidth = this.questionText.width * 0.5;
-        this.question.lastIndexOf(this.gameHalfWidth - textHalfWidth);
+        this.questionText.setX(this.gameHalfWidth - textHalfWidth);
     }
 }
