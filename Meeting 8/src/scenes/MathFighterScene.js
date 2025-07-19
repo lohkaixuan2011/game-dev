@@ -13,9 +13,9 @@ export default class MathFighterScene extends Phaser.Scene {
         this.enemy = undefined;
         this.slash = undefined;
 
-        this.startGame = false
-        this.questionText = undefined
-        this.resultText = undefined
+        this.startGame = false;
+        this.questionText = undefined;
+        this.resultText = undefined;
 
         this.button1 = undefined;
         this.button2 = undefined;
@@ -33,7 +33,9 @@ export default class MathFighterScene extends Phaser.Scene {
         this.numberArray = [];
         this.number = 0;
 
-        this.resultText = undefined
+        this.resultText = undefined;
+
+        this.question = [];
 
     }
 
@@ -188,6 +190,9 @@ export default class MathFighterScene extends Phaser.Scene {
             this.addNumber,
             this
         );
+
+        this.generateQuestion();
+        
     }
 
     createButtons() {
@@ -283,7 +288,7 @@ export default class MathFighterScene extends Phaser.Scene {
         }
 
         this.number = parseInt(this.numberArray.join(''));
-        
+        //@ts-ignore
         this.resultText.setText(this.number);
         const textHalfWidth = this.resultText.width * 0.5;
         this.resultText.setX(this.gameHalfWidth - textHalfWidth);
@@ -291,4 +296,44 @@ export default class MathFighterScene extends Phaser.Scene {
 
     }
 
+    getOperator() {
+        const operators = ['+', '-', 'x', '/'];
+        return operators[Phaser.Math.Between(0, 3)]
+    }
+
+    generateQuestion() {
+        let numberA = Phaser.Math.Between(0, 50)
+        let numberB = Phaser.Math.Between(0, 50)
+        let operator = this.getOperator()
+            //plus
+        if (operator === '+') {
+            this.question[0] = `${numberA} + ${numberB}`
+            this.question[1] = numberA + numberB
+            //multiples 
+        } else if (operator === 'x') {
+            this.question[0] = `${numberA} x ${numberB}`
+            this.question[1] = numberA * numberB
+            //minus
+        } else if (operator === '-') {
+            if (numberB > numberA) {
+                this.question[0] = `${numberA} - ${numberB}`
+                this.question[1] = numberB - numberA
+            } else {
+                this.question[0] = `${numberA} - ${numberB}`
+                this.question[1] = numberA - numberB
+            }
+            //divide
+        } else if (operator === '/') {
+            do {
+                numberA = Phaser.Math.Between(0, 50)
+                numberB = Phaser.Math.Between(0, 50)
+            } while (!Number.isInteger(numberA / numberB))
+            this.question[0] = `${numberA} / ${numberB}`
+            this.question[1] = numberA / numberB
+        }
+
+        this.question.setText(this.question[0]);
+        const textHalfWidth = this.questionText.width * 0.5;
+        this.question.lastIndexOf(this.gameHalfWidth - textHalfWidth);
+    }
 }
