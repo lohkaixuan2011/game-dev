@@ -118,46 +118,46 @@ export default class MathFighterScene extends Phaser.Scene {
         //player animation 
         this.anims.create({
             key: 'player-standby',
-            frames: this.anims.generateFrameNames('player', { start: 15, end: 19 }),
+            frames: this.anims.generateFrameNumbers('player', { start: 15, end: 19 }),
             frameRate: 10,
             repeat: -1
         });
         this.anims.create({
             key: 'player-attack',
-            frames: this.anims.generateFrameNames('player', { start: 10, end: 14 }),
+            frames: this.anims.generateFrameNumbers('player', { start: 10, end: 14 }),
             frameRate: 10,
         });
         this.anims.create({
             key: 'player-hit',
-            frames: this.anims.generateFrameNames('player', { start: 5, end: 9 }),
+            frames: this.anims.generateFrameNumbers('player', { start: 5, end: 9 }),
             frameRate: 10,
         });
         this.anims.create({
             key: 'player-die',
-            frames: this.anims.generateFrameNames('player', { start: 0, end: 4 }),
+            frames: this.anims.generateFrameNumbers('player', { start: 0, end: 4 }),
             frameRate: 10,
         });
 
         //enemy animation 
         this.anims.create({
             key: 'enemy-standby',
-            frames: this.anims.generateFrameNames('enemy', { start: 15, end: 19 }),
+            frames: this.anims.generateFrameNumbers('enemy', { start: 15, end: 19 }),
             frameRate: 10,
             repeat: -1
         });
         this.anims.create({
             key: 'enemy-attack',
-            frames: this.anims.generateFrameNames('enemy', { start: 10, end: 14 }),
+            frames: this.anims.generateFrameNumbers('enemy', { start: 10, end: 14 }),
             frameRate: 10,
         });
         this.anims.create({
             key: 'enemy-hit',
-            frames: this.anims.generateFrameNames('enemy', { start: 5, end: 9 }),
+            frames: this.anims.generateFrameNumbers('enemy', { start: 5, end: 9 }),
             frameRate: 10,
         });
         this.anims.create({
             key: 'enemy-die',
-            frames: this.anims.generateFrameNames('enemy', { start: 0, end: 4 }),
+            frames: this.anims.generateFrameNumbers('enemy', { start: 0, end: 4 }),
             frameRate: 10,
         });
     }
