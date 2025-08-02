@@ -46,7 +46,7 @@ export default class MathFighterScene extends Phaser.Scene {
         this.scoreLabel = undefined;
 
         this.timer = 60;
-        this.timeLabel = undefined;
+        this.timerLabel = undefined;
         this.countdown = undefined;
 
     }
@@ -169,7 +169,10 @@ export default class MathFighterScene extends Phaser.Scene {
         }
 
         this.scoreLabel.setText("Score :" + this.score);
-        
+
+        if (this.startGame = true) {
+            this.timerLabel.setText("Timer :" + this.timer);
+        }
     }
 
     createAnimation() {
@@ -250,6 +253,12 @@ export default class MathFighterScene extends Phaser.Scene {
 
         this.generateQuestion();
 
+        this.countdown = this.time.addEvent({
+            delay: 1000,
+            callback: this.gameOver,
+            callbackScope: this,
+            loop: true,
+        });
     }
 
     createButtons() {
@@ -427,5 +436,12 @@ export default class MathFighterScene extends Phaser.Scene {
             this.correctAnswer = undefined
             this.generateQuestion()
         })
+    }
+
+    gameOver(){
+        this.timer--;
+        if (this.timer < 0){
+            this.scene.start("game-over-scene", { score: this.score});
+        }
     }
 }
