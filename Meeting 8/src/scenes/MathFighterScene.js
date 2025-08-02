@@ -37,6 +37,18 @@ export default class MathFighterScene extends Phaser.Scene {
 
         this.question = [];
 
+        this.correctAnswer = undefined;
+
+        this.playerAttack = false;
+        this.enemyAttack = false;
+
+        this.score = 0;
+        this.scoreLabel = undefined;
+
+        this.timer = 60;
+        this.timeLabel = undefined;
+        this.countdown = undefined;
+
     }
 
     preload() {
@@ -109,10 +121,55 @@ export default class MathFighterScene extends Phaser.Scene {
             this.gameStart();
             start_button.destroy();
         }, this);
+
+        this.physics.add.overlap(
+            this.slash, this.player,
+            this.spriteHit,
+            null, this
+        )
+
+        this.physics.add.overlap(
+            this.slash, this.enemy,
+            this.spriteHit,
+            null, this
+        )
+
+        this.scoreLabel = this.add.text(10, 10, 'score: 0', {
+            color: 'white',
+            backgroundColor: 'black'
+        }).setDepth(1);
+
+        this.timerLabel = this.add.text(380, 10, "Time :", {
+            color: "white",
+            backgroundColor: "black"
+        }).setDepth(1);
     }
 
-    update() {
+    update(time) {
+        if (this.correctAnswer === true && !this.playerAttack) {
+            this.player.anims.play('player-attack', true);
+            this.time.delayedCall(500, () => {
+                this.createSlash(this.player.x + 60, this.player.y, 4, 600)
+            });
+            this.playerAttack = true;
 
+            this.score += 10;
+            this.scoreLabel.setText(`Score: ${this.score}`);
+        }
+        if (this.correctAnswer === undefined) {
+            this.player.anims.play('player-standby', true);
+            this.enemy.anims.play('enemy-standby', true);
+        }
+        if (this.correctAnswer === false && !this.enemyAttack) {
+            this.enemy.anims.play('enemy-attack', true);
+            this.time.delayedCall(500, () => {
+                this.createSlash(this.enemy.x - 60, this.enemy.y, 2, -600, true)
+            });
+            this.enemyAttack = true;
+        }
+
+        this.scoreLabel.setText("Score :" + this.score);
+        
     }
 
     createAnimation() {
@@ -192,7 +249,7 @@ export default class MathFighterScene extends Phaser.Scene {
         );
 
         this.generateQuestion();
-        
+
     }
 
     createButtons() {
@@ -305,7 +362,7 @@ export default class MathFighterScene extends Phaser.Scene {
         let numberA = Phaser.Math.Between(0, 50)
         let numberB = Phaser.Math.Between(0, 50)
         let operator = this.getOperator()
-            //plus
+        //plus
         if (operator === '+') {
             this.question[0] = `${numberA} + ${numberB}`
             this.question[1] = numberA + numberB
@@ -335,5 +392,40 @@ export default class MathFighterScene extends Phaser.Scene {
         this.questionText.setText(this.question[0]);
         const textHalfWidth = this.questionText.width * 0.5;
         this.questionText.setX(this.gameHalfWidth - textHalfWidth);
+    }
+
+    checkAnswer() {
+        if (this.number == this.question[1]) {
+            this.correctAnswer = true
+        } else {
+            this.correctAnswer = false
+        }
+    }
+
+    createSlash(x, y, frame, velocity, flip = false) {
+        this.slash.setPosition(x, y)
+            .setActive(true)
+            .setVisible(true)
+            .setFrame(frame)
+            .setFlipX(flip)
+            .setVelocityX(velocity)
+    }
+
+    spriteHit(slash, sprite) {
+        slash.x = 0
+        slash.y = 0
+        slash.setActive(false)
+        slash.setVisible(false)
+        if (sprite.texture.key == 'player') {
+            sprite.anims.play('player-hit', true)
+        } else {
+            sprite.anims.play('enemy-hit', true)
+        }
+        this.time.delayedCall(500, () => {
+            this.playerAttack = false
+            this.enemyAttack = false
+            this.correctAnswer = undefined
+            this.generateQuestion()
+        })
     }
 }
