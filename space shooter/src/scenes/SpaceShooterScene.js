@@ -9,6 +9,8 @@ export default class SpaceShooterScene extends Phaser.Scene {
 
     init() {
         this.meteorites = undefined;
+
+        this.speed = 200;
     }
 
     preload() {
@@ -73,11 +75,11 @@ export default class SpaceShooterScene extends Phaser.Scene {
     update() {
 
         if (this.cursor.left.isDown) {
-            this.player.setVelocity(-200, 0);
+            this.player.setVelocity(this.speed * -1, 0);
             this.player.anims.play('left', true);
         }
         else if (this.cursor.right.isDown) {
-            this.player.setVelocity(200, 0);
+            this.player.setVelocity(this.speed, 0);
             this.player.anims.play('right', true);
         }
         else {
@@ -85,11 +87,11 @@ export default class SpaceShooterScene extends Phaser.Scene {
             this.player.anims.play('turn');
         }
         if (this.cursor.up.isDown) {
-            this.player.setVelocity(0, -200);
+            this.player.setVelocity(0, this.speed * -1);
             this.player.anims.play('turn');
         }
         else if(this.cursor.down.isDown){
-            this.player.setVelocity(0,200)
+            this.player.setVelocity(0,this.speed)
             this.player.anims.play('down')
         }
 
