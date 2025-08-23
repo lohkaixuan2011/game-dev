@@ -52,7 +52,74 @@ export default class SpaceShooterScene extends Phaser.Scene {
             loop: true,
         });
 
+        this.cursor = this.input.keyboard.createCursorKeys();
 
+        this.anims.create({
+            key: "go up",
+            frames: this.anims.generateFrameNumbers("player", { start: 2, end: 0 }),
+            frameRate: 10,
+            repeat: -1,
+        });
+
+        this.anims.create({
+            key: "go idle",
+            frames: [{ key: "player", frame: 4 }],
+            frameRate: 20,
+        });
+
+
+    }
+
+    update() {
+        // // Reset velocity
+        // let velocityX = 0;
+        // let velocityY = 0;
+        // let isMoving = false;
+
+        // // Handle horizontal movement
+        // if (this.cursor.left.isDown) {
+        //     velocityX = -200;
+        //     isMoving = true;
+        // } else if (this.cursor.right.isDown) {
+        //     velocityX = 200;
+        //     isMoving = true;
+        // }
+
+        // // Handle vertical movement
+        // if (this.cursor.up.isDown) {
+        //     velocityY = -200;
+        //     isMoving = true;
+        // } else if (this.cursor.down.isDown) {
+        //     velocityY = 200;
+        //     isMoving = true;
+        // }
+
+        // // Set velocity
+        // this.player.setVelocity(velocityX, velocityY);
+
+        if (this.cursor.left.isDown) {
+            this.player.setVelocity(-200, 0);
+            this.player.anims.play('left', true);
+        }
+        else if (this.cursor.right.isDown) {
+            this.player.setVelocity(200, 0);
+            this.player.anims.play('right', true);
+        }
+        else {
+            this.player.setVelocity(0, 0);
+            this.player.anims.play('turn');
+        }
+        if (this.cursor.up.isDown) {
+            this.player.setVelocity(0, -200);
+            this.player.anims.play('turn');
+        }
+
+        // Handle animations
+        if (this.cursor.up.isDown) {
+            this.player.anims.play("go up", true);
+        } else {
+            this.player.anims.play("go idle", true);
+        }
     }
 
     spawnEnemy() {
