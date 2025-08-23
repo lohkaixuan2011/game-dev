@@ -71,31 +71,6 @@ export default class SpaceShooterScene extends Phaser.Scene {
     }
 
     update() {
-        // // Reset velocity
-        // let velocityX = 0;
-        // let velocityY = 0;
-        // let isMoving = false;
-
-        // // Handle horizontal movement
-        // if (this.cursor.left.isDown) {
-        //     velocityX = -200;
-        //     isMoving = true;
-        // } else if (this.cursor.right.isDown) {
-        //     velocityX = 200;
-        //     isMoving = true;
-        // }
-
-        // // Handle vertical movement
-        // if (this.cursor.up.isDown) {
-        //     velocityY = -200;
-        //     isMoving = true;
-        // } else if (this.cursor.down.isDown) {
-        //     velocityY = 200;
-        //     isMoving = true;
-        // }
-
-        // // Set velocity
-        // this.player.setVelocity(velocityX, velocityY);
 
         if (this.cursor.left.isDown) {
             this.player.setVelocity(-200, 0);
@@ -112,6 +87,10 @@ export default class SpaceShooterScene extends Phaser.Scene {
         if (this.cursor.up.isDown) {
             this.player.setVelocity(0, -200);
             this.player.anims.play('turn');
+        }
+        else if(this.cursor.down.isDown){
+            this.player.setVelocity(0,200)
+            this.player.anims.play('down')
         }
 
         // Handle animations
