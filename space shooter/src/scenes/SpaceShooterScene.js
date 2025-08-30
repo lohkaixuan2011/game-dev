@@ -10,7 +10,9 @@ export default class SpaceShooterScene extends Phaser.Scene {
     init() {
         this.meteorites = undefined;
 
+        this.player = undefined
         this.speed = 200;
+
     }
 
     preload() {
@@ -34,11 +36,9 @@ export default class SpaceShooterScene extends Phaser.Scene {
     create() {
         this.add.image(400, 200, 'background');
 
-        this.player = this.physics.add.sprite(400, 200, 'player');
-        this.player.setCollideWorldBounds(true);
-        this.player.setScale(0.5); // Scale down to 50% of original size
 
 
+        this.player = this.createPlayer()
 
         this.meteorites = this.physics.add.group({
             classType: FallingObject,
@@ -72,35 +72,10 @@ export default class SpaceShooterScene extends Phaser.Scene {
 
     }
 
-    update() {
+    update(time) {
 
-        if (this.cursor.left.isDown) {
-            this.player.setVelocity(this.speed * -1, 0);
-            this.player.anims.play('left', true);
-        }
-        else if (this.cursor.right.isDown) {
-            this.player.setVelocity(this.speed, 0);
-            this.player.anims.play('right', true);
-        }
-        else {
-            this.player.setVelocity(0, 0);
-            this.player.anims.play('turn');
-        }
-        if (this.cursor.up.isDown) {
-            this.player.setVelocity(0, this.speed * -1);
-            this.player.anims.play('turn');
-        }
-        else if(this.cursor.down.isDown){
-            this.player.setVelocity(0,this.speed)
-            this.player.anims.play('down')
-        }
+        this.movePlayer(this.player, time);
 
-        // Handle animations
-        if (this.cursor.up.isDown) {
-            this.player.anims.play("go up", true);
-        } else {
-            this.player.anims.play("go idle", true);
-        }
     }
 
     spawnEnemy() {
@@ -118,4 +93,46 @@ export default class SpaceShooterScene extends Phaser.Scene {
         }
     }
 
+    createPlayer() {
+
+        const player = this.physics.add.sprite(400, 200, 'player');
+        player.setCollideWorldBounds(true);
+        player.setScale(0.5); // Scale down to 50% of original size
+        return player;
+
+    }
+
+    movePlayer(player, time) {
+
+        if (this.cursor.left.isDown) {
+            player.setVelocity(this.speed * -1, 0);
+            player.anims.play('left', true);
+        }
+        else if (this.cursor.right.isDown) {
+            player.setVelocity(this.speed, 0);
+            player.anims.play('right', true);
+        }
+        else {
+            player.setVelocity(0, 0);
+            player.anims.play('turn');
+        }
+        if (this.cursor.up.isDown) {
+            player.setVelocity(0, this.speed * -1);
+            player.anims.play('turn');
+        }
+        else if (this.cursor.down.isDown) {
+            player.setVelocity(0, this.speed)
+            player.anims.play('down')
+        }
+
+        // Handle animations
+        if (this.cursor.up.isDown) {
+            player.anims.play("go up", true);
+        } else {
+            player.anims.play("go idle", true);
+        }
+
+    }
+
 }
+
