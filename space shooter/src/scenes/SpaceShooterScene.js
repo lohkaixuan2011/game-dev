@@ -28,6 +28,7 @@ export default class SpaceShooterScene extends Phaser.Scene {
         this.load.image('meteorite1', 'images/meteorite1.png');
         this.load.image('meteorite2', 'images/meteorite2.png');
         this.load.image('shoot-button', 'images/shoot button.png');
+        this.load.image('laser', 'images/projectiles.png')
 
         this.load.spritesheet('player', 'images/player spaceship.png', {
             frameWidth: 150.33,
@@ -38,11 +39,6 @@ export default class SpaceShooterScene extends Phaser.Scene {
             frameWidth: 163,
             frameHeight: 203
 
-        });
-
-        this.load.spritesheet("laser", "images/projectiles.png", {
-            frameWidth: 124,
-            frameHeight: 121,
         });
 
     }
@@ -90,7 +86,6 @@ export default class SpaceShooterScene extends Phaser.Scene {
 
         })
 
-
     }
 
     update(time) {
@@ -116,7 +111,7 @@ export default class SpaceShooterScene extends Phaser.Scene {
 
     createPlayer() {
 
-        const player = this.physics.add.sprite(400, 200, 'player');
+        const player = this.physics.add.sprite(400, 200, 'player').setOffset(-10, -10);
         player.setCollideWorldBounds(true);
         player.setScale(0.5); // Scale down to 50% of original size
         return player;
