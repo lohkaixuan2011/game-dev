@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 import FallingObject from './ui/FallingObject';
+import Laser from './ui/MyLaser';
+
 
 export default class SpaceShooterScene extends Phaser.Scene {
 
@@ -13,12 +15,19 @@ export default class SpaceShooterScene extends Phaser.Scene {
         this.player = undefined
         this.speed = 200;
 
+        this.lasers = undefined
+        this.lastFired = 10
+
+        this.shoot = false
+
+
     }
 
     preload() {
         this.load.image('background', 'images/Galaxy Background.png');
         this.load.image('meteorite1', 'images/meteorite1.png');
         this.load.image('meteorite2', 'images/meteorite2.png');
+        this.load.image('shoot-button', 'images/shoot button.png');
 
         this.load.spritesheet('player', 'images/player spaceship.png', {
             frameWidth: 150.33,
@@ -31,13 +40,18 @@ export default class SpaceShooterScene extends Phaser.Scene {
 
         });
 
+        this.load.spritesheet("laser", "images/projectiles.png", {
+            frameWidth: 124,
+            frameHeight: 121,
+        });
+
     }
 
     create() {
         this.add.image(400, 200, 'background');
 
 
-
+        this.createButton()
         this.player = this.createPlayer()
 
         this.meteorites = this.physics.add.group({
@@ -68,6 +82,13 @@ export default class SpaceShooterScene extends Phaser.Scene {
             frames: [{ key: "player", frame: 4 }],
             frameRate: 20,
         });
+
+        this.lasers = this.physics.add.group({
+            classType: Laser,
+            maxSize: 5,
+            runChildUpdate: true,
+
+        })
 
 
     }
@@ -102,6 +123,23 @@ export default class SpaceShooterScene extends Phaser.Scene {
 
     }
 
+    createButton() {
+        this.input.addPointer(1)
+
+        let shoot = this.add.image(
+            800, 650, 'shoot-button'
+        ).setInteractive().setDepth(0.5).setAlpha(0.8).setScale(0.3)
+
+        shoot.on("pointerdown", () => {
+            this.shoot = true;
+        }, this);
+
+        shoot.on("pointerout", () => {
+            this.shoot = false;
+        }, this);
+
+    }
+
     movePlayer(player, time) {
 
         if (this.cursor.left.isDown) {
@@ -132,7 +170,19 @@ export default class SpaceShooterScene extends Phaser.Scene {
             player.anims.play("go idle", true);
         }
 
+        if (this.shoot && time > this.lastFired) {
+            const laser = this.lasers.get(0, 0, "laser");
+            if (laser) {
+                laser.fire(this.player.x, this.player.y);
+                this.lastFired = time + 150;
+                // this.sound.play("laser");
+            }
+        }
+
+
     }
 
-}
 
+
+
+}
