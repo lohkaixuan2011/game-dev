@@ -23,6 +23,9 @@ export default class SpaceShooterScene extends Phaser.Scene {
         this.scoreLabel = undefined;
         this.score = 0;
 
+        this.lifeLabel = undefined;
+        this.life = 3;
+
 
     }
 
@@ -101,6 +104,17 @@ export default class SpaceShooterScene extends Phaser.Scene {
             backgroundColor: "white",
         }).setDepth(1);
 
+        this.lifeLabel = this.add.text(20, 27, "life", {
+            fontSize: "16px",
+            color: "black",
+            backgroundColor: "white",
+        }).setDepth(1)
+
+        this.physics.add.overlap(
+            this.player, this.meteorites,
+            this.decreaseLife,
+            null, this
+        )
     }
 
     update(time) {
@@ -108,6 +122,7 @@ export default class SpaceShooterScene extends Phaser.Scene {
         this.movePlayer(this.player, time);
 
         this.scoreLabel.setText("Score :" + this.score);
+        this.lifeLabel.setText("Life :" + this.life);
 
     }
 
@@ -130,6 +145,18 @@ export default class SpaceShooterScene extends Phaser.Scene {
         laser.die()
         meteorite1.die()
         this.score += 10;
+    }
+
+    decreaseLife(player, enemy) {
+        enemy.die();
+        this.life--;
+        if (this.life == 2) {
+            player.setTint(0xff0000);
+        } else if (this.life == 1) {
+            player.setTint(0xff0000).setAlpha(0.2);
+        } else if (this.life == 0) {
+            this.scene.start("over-scene", { score: this.score });
+        }
     }
 
     createPlayer() {

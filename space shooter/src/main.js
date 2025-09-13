@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 import SpaceShooterScene from './scenes/SpaceShooterScene';
+import GameOverScene from './scenes/GameOverScene';
+import StartScene from './scenes/StartScene';
 
 const config = {
     type: Phaser.AUTO,
@@ -13,7 +15,7 @@ const config = {
             debug: true
         },
     },
-    scene: [SpaceShooterScene],
+    scene: [StartScene, GameOverScene, SpaceShooterScene],
 
     scale: {
         mode: Phaser.Scale.FIT,
