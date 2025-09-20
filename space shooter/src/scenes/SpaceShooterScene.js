@@ -13,7 +13,7 @@ export default class SpaceShooterScene extends Phaser.Scene {
         this.meteorites = undefined;
 
         this.player = undefined
-        this.speed = 200;
+        this.speed = 150;
 
         this.lasers = undefined
         this.lastFired = 10
@@ -58,7 +58,7 @@ export default class SpaceShooterScene extends Phaser.Scene {
 
         this.meteorites = this.physics.add.group({
             classType: FallingObject,
-            maxSize: 500,
+            maxSize: 1000,
             runChildUpdate: true,
         })
 
@@ -128,7 +128,7 @@ export default class SpaceShooterScene extends Phaser.Scene {
 
     spawnEnemy() {
         const config = {
-            speed: 50,
+            speed: 100,
             rotation: 0.05,
             scale: 0.5 // Scale down to 50% of original size
         };
@@ -219,7 +219,7 @@ export default class SpaceShooterScene extends Phaser.Scene {
             const laser = this.lasers.get(0, 0, "laser");
             if (laser) {
                 laser.fire(this.player.x, this.player.y);
-                this.lastFired = time + 150;
+                this.lastFired = time + 500;
                 // this.sound.play("laser");
             }
         }
