@@ -93,7 +93,7 @@ export default class SpaceShooterScene extends Phaser.Scene {
         })
 
         this.physics.add.overlap(
-            this.meteorites, this.lasers,
+            this.lasers, this.meteorites,
             this.hitEnemy,
             null, this
         )
@@ -132,18 +132,21 @@ export default class SpaceShooterScene extends Phaser.Scene {
             rotation: 0.05,
             scale: 0.5 // Scale down to 50% of original size
         };
+
+        const meteoriteType = Phaser.Math.Between(1, 2) === 1 ? 'meteorite1' : 'meteorite2';
+
         // @ts-ignore
-        const meteorite1 = this.meteorites.get(0, 0, 'meteorite1', config);
+        const meteorite = this.meteorites.get(0, 0, meteoriteType, config);
         const positionX = Phaser.Math.Between(50, 850);
-        if (meteorite1) {
-            meteorite1.setScale(0.7);
-            meteorite1.spawn(positionX);
+        if (meteorite) {
+            meteorite.setScale(0.7);
+            meteorite.spawn(positionX);
         }
     }
 
-    hitEnemy(laser, meteorite1){
+    hitEnemy(laser, meteorite) {
         laser.die()
-        meteorite1.die()
+        meteorite.die()
         this.score += 10;
     }
 
