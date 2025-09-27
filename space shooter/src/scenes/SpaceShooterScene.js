@@ -14,6 +14,10 @@ export default class SpaceShooterScene extends Phaser.Scene {
 
         this.player = undefined
         this.speed = 150;
+        this.baseSpeed = 150;
+        this.speedMultiplier = 1;
+        this.maxSpeedMultiplier = 3;
+        this.speedLabel = undefined;
 
         this.lasers = undefined
         this.lastFired = 10
@@ -35,6 +39,9 @@ export default class SpaceShooterScene extends Phaser.Scene {
         this.load.image('meteorite2', 'images/meteorite2.png');
         this.load.image('shoot-button', 'images/shoot button.png');
         this.load.image('laser', 'images/projectiles.png')
+
+        this.load.image('down-btn', 'images/down-btn.png');
+        this.load.image('up-btn', 'images/up-btn.png');
 
         this.load.spritesheet('player', 'images/player spaceship.png', {
             frameWidth: 150.33,
@@ -104,7 +111,7 @@ export default class SpaceShooterScene extends Phaser.Scene {
             backgroundColor: "white",
         }).setDepth(1);
 
-        this.lifeLabel = this.add.text(20, 27, "life", {
+        this.lifeLabel = this.add.text(10, 27, "life", {
             fontSize: "16px",
             color: "black",
             backgroundColor: "white",
@@ -115,6 +122,12 @@ export default class SpaceShooterScene extends Phaser.Scene {
             this.decreaseLife,
             null, this
         )
+
+        this.speedLabel = this.add.text(10, 43, "speed", {
+            fontSize: "16px",
+            color: "black",
+            backgroundColor: "white",
+        }).setDepth(1)
     }
 
     update(time) {
@@ -123,6 +136,8 @@ export default class SpaceShooterScene extends Phaser.Scene {
 
         this.scoreLabel.setText("Score :" + this.score);
         this.lifeLabel.setText("Life :" + this.life);
+
+        this.speedLabel.setText("Speed :" + this.speed);
 
     }
 
@@ -189,6 +204,25 @@ export default class SpaceShooterScene extends Phaser.Scene {
     }
 
     movePlayer(player, time) {
+
+        let speedButton = this.add.image(
+            850, 100, 'up-btn'
+        ).setInteractive().setDepth(0.5).setAlpha(0.8).setScale(0.8);
+
+        speedButton.on("pointerdown", () => {
+            this.speedMultiplier = this.speedMultiplier >= this.maxSpeedMultiplier ? 1 : this.speedMultiplier + 0.5;
+            this.speed = this.baseSpeed * this.speedMultiplier;
+        }, this);
+
+        let slowButton = this.add.image(
+            850, 200, 'down-btn'
+        ).setInteractive().setDepth(0.5).setAlpha(0.8).setScale(0.8);
+
+        slowButton.on("pointerdown", () => {
+            this.speedMultiplier = this.speedMultiplier <= 1 ? 1 : this.speedMultiplier - 0.5;
+            this.speed = this.baseSpeed * this.speedMultiplier;
+        }, this);
+
 
         if (this.cursor.left.isDown) {
             player.setVelocity(this.speed * -1, 0);
