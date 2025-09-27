@@ -210,7 +210,7 @@ export default class SpaceShooterScene extends Phaser.Scene {
         ).setInteractive().setDepth(0.5).setAlpha(0.8).setScale(0.8);
 
         speedButton.on("pointerdown", () => {
-            this.speedMultiplier = this.speedMultiplier >= this.maxSpeedMultiplier ? 1 : this.speedMultiplier + 0.5;
+            this.speedMultiplier = Math.min(this.speedMultiplier + 0.5, this.maxSpeedMultiplier);
             this.speed = this.baseSpeed * this.speedMultiplier;
         }, this);
 
