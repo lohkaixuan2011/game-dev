@@ -87,7 +87,7 @@ export default class SpaceShooterScene extends Phaser.Scene {
         });
 
         this.time.addEvent({
-            delay: Phaser.Math.Between(1000, 5000),
+            delay: Phaser.Math.Between(8000, 15000),
             callback: this.spawnWrench,
             callbackScope: this,
             loop: true,
