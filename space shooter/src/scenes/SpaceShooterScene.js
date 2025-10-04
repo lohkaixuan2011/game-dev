@@ -31,6 +31,8 @@ export default class SpaceShooterScene extends Phaser.Scene {
         this.lifeLabel = undefined;
         this.life = 3;
 
+        this.isPaused = false;
+        this.pauseOverlay = undefined;
 
     }
 
@@ -94,6 +96,10 @@ export default class SpaceShooterScene extends Phaser.Scene {
         });
 
         this.cursor = this.input.keyboard.createCursorKeys();
+        
+        // Add pause key listener
+        this.input.keyboard.on('keydown-P', this.togglePause, this);
+        this.input.keyboard.on('keydown-SPACE', this.togglePause, this);
 
         this.anims.create({
             key: "go up",
@@ -153,6 +159,10 @@ export default class SpaceShooterScene extends Phaser.Scene {
     }
 
     update(time) {
+        // Don't update game logic if paused
+        if (this.isPaused) {
+            return;
+        }
 
         this.movePlayer(this.player, time);
 
@@ -218,6 +228,55 @@ export default class SpaceShooterScene extends Phaser.Scene {
         wrench.die();
         this.life++;
         this.updateLife(player);
+    }
+
+    togglePause() {
+        if (this.isPaused) {
+            this.resumeGame();
+        } else {
+            this.pauseGame();
+        }
+    }
+
+    pauseGame() {
+        this.isPaused = true;
+        this.physics.pause();
+        this.time.paused = true;
+        this.createPauseOverlay();
+    }
+
+    resumeGame() {
+        this.isPaused = false;
+        this.physics.resume();
+        this.time.paused = false;
+        this.destroyPauseOverlay();
+    }
+
+    createPauseOverlay() {
+        // Create semi-transparent background
+        this.pauseOverlay = this.add.rectangle(400, 300, 1200, 1000, 0x000000, 0.7);
+        this.pauseOverlay.setDepth(10);
+
+        // Create pause text
+        this.pauseText = this.add.text(500, 350, 'GAME PAUSED', {
+            fontSize: '48px',
+            color: '#ffffff',
+            fontStyle: 'bold'
+        }).setOrigin(0.5).setDepth(11);
+
+        // Create instruction text
+        this.instructionText = this.add.text(500, 420, 'Press P or SPACE to resume', {
+            fontSize: '24px',
+            color: '#ffffff'
+        }).setOrigin(0.5).setDepth(11);
+    }
+
+    destroyPauseOverlay() {
+        if (this.pauseOverlay) {
+            this.pauseOverlay.destroy();
+            this.pauseText.destroy();
+            this.instructionText.destroy();
+        }
     }
 
     decreaseLife(player, enemy) {
