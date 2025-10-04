@@ -11,6 +11,7 @@ export default class SpaceShooterScene extends Phaser.Scene {
 
     init() {
         this.meteorites = undefined;
+        this.wrenches = undefined
 
         this.player = undefined
         this.speed = 150;
@@ -43,6 +44,8 @@ export default class SpaceShooterScene extends Phaser.Scene {
         this.load.image('down-btn', 'images/down-btn.png');
         this.load.image('up-btn', 'images/up-btn.png');
 
+        this.load.image('wrench', 'images/wrench.png');
+
         this.load.spritesheet('player', 'images/player spaceship.png', {
             frameWidth: 150.33,
             frameHeight: 175.5
@@ -69,11 +72,24 @@ export default class SpaceShooterScene extends Phaser.Scene {
             runChildUpdate: true,
         })
 
+        this.wrenches = this.physics.add.group({
+            classType: FallingObject,
+            maxSize: 50,
+            runChildUpdate: true,
+        })
+
 
         this.time.addEvent({
             delay: Phaser.Math.Between(1000, 5000), //--------> Delay random range 1-5 seconds
             callback: this.spawnEnemy,
             callbackScope: this,        //--------------------> Calling a method named spawnEnemy
+            loop: true,
+        });
+
+        this.time.addEvent({
+            delay: Phaser.Math.Between(1000, 5000),
+            callback: this.spawnWrench,
+            callbackScope: this,
             loop: true,
         });
 
@@ -102,6 +118,12 @@ export default class SpaceShooterScene extends Phaser.Scene {
         this.physics.add.overlap(
             this.lasers, this.meteorites,
             this.hitEnemy,
+            null, this
+        )
+
+        this.physics.add.overlap(
+            this.player, this.wrenches,
+            this.increaseLife,
             null, this
         )
 
@@ -144,8 +166,7 @@ export default class SpaceShooterScene extends Phaser.Scene {
     spawnEnemy() {
         const config = {
             speed: 100,
-            rotation: 0.05,
-            scale: 0.5 // Scale down to 50% of original size
+            rotation: 0.05
         };
 
         const meteoriteType = Phaser.Math.Between(1, 2) === 1 ? 'meteorite1' : 'meteorite2';
@@ -159,23 +180,54 @@ export default class SpaceShooterScene extends Phaser.Scene {
         }
     }
 
+    spawnWrench() {
+        const config = {
+            speed: 100,
+            rotation: 0.05
+        };
+
+        // @ts-ignore
+        const wrench = this.wrenches.get(0, 0, 'wrench', config);
+        const positionX = Phaser.Math.Between(50, 850);
+        if (wrench) {
+            wrench.setScale(0.04);
+            wrench.spawn(positionX);
+        }
+    }
+
     hitEnemy(laser, meteorite) {
         laser.die()
         meteorite.die()
         this.score += 10;
     }
 
-    decreaseLife(player, enemy) {
-        enemy.die();
-        this.life--;
-        if (this.life == 2) {
-            player.setTint(0xff0000);
-        } else if (this.life == 1) {
+    updateLife(player) {
+
+        if (this.life === 3) {
+            player.clearTint().setAlpha(1); // full health, normal
+        } else if (this.life === 2) {
+            player.setTint(0xff0000).setAlpha(1);
+        } else if (this.life === 1) {
             player.setTint(0xff0000).setAlpha(0.2);
-        } else if (this.life == 0) {
+        } else if (this.life <= 0) {
             this.scene.start("over-scene", { score: this.score });
         }
     }
+
+    increaseLife(player, wrench) {
+        wrench.die();
+        this.life++;
+        this.updateLife(player);
+    }
+
+    decreaseLife(player, enemy) {
+        enemy.die();
+        this.life--;
+        this.updateLife(player);
+    }
+
+
+
 
     createPlayer() {
 
